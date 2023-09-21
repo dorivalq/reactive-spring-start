@@ -17,7 +17,7 @@ jar {
 	manifest {
 		attributes(
 				// #'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-				'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '),
+				//'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '),
 				'Main-Class': 'com.reactive.ReactiveApplication'
 		)
 	}
@@ -25,4 +25,10 @@ jar {
 
 test{
 	useJUnitPlatform()
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
 }
