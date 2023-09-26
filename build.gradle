@@ -12,6 +12,10 @@ dependencies {
 	testImplementation "org.projectlombok:lombok:${lombokVersion}"
 	testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 	testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+	implementation("org.apache.commons:commons-lang3:${commonsLangVersion}")
+	implementation group: 'com.google.guava', name: 'guava', version: '25.0-jre'
+	implementation("io.opentracing.contrib:opentracing-spring-cloud-starter:${springCloudStarterVersion}")
+	implementation("io.opentracing.contrib:opentracing-spring-cloud-starter-jaeger:${springCloudStarterJaegerVersion}")
 }
 jar {
 	manifest {

@@ -3,6 +3,7 @@ package com.reactive;
 import com.reactive.domain.AnalysisResult;
 import com.reactive.domain.FileAnalysisResponse;
 import com.reactive.domain.LoginResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @RestController
 @RequestMapping("/reactive")
 public class TestController {
 
+    @Autowired
+    private WebClient client;
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public String login() {
@@ -33,10 +37,24 @@ public class TestController {
 
     }
 
+    @GetMapping
+    public String getMono(){
+         client.get().uri("/")
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .headers(header -> {
+                            header.add("x-name", "x-value");
+                                    header.add("x-name1", "x-value1");
+                                    header.add("x-name2", "x-value2");
+                        }
+                )
+                .exchangeToMono(cr -> cr.bodyToMono(String.class))
+                .subscribe(evt -> System.out.println(evt));
+
+        return "Mono OK!";
+    }
+
     @GetMapping("/login")
     public String getLogin() {
-        new DefenderClient().returnClient();
-
         return "{\n" +
                 "    \"oms-csrf-token\": \"YWVjMmZhM2IyYTg3OGQxZjEzNjA4ZGY1OTU0MGRmZmY=\",\n" +
                 "    \"session_id\": \"9c6b1a98b4914baf8ff029aeeaa08cf0\"\n" +
@@ -45,14 +63,11 @@ public class TestController {
 
     @PostMapping(value = "/file/sync", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FileAnalysisResponse> analyseFile(@RequestBody Resource inputStream){
-//    public ResponseEntity<FileAnalysisResponse> analyseFile(@RequestPart OpeningBalancesInput openingBalancesInput,
-//                                                            @RequestPart List<MultipartFile> list) {
         final FileAnalysisResponse analysisResponse = FileAnalysisResponse.builder()
                 .fileName("filename.txt")
                 .result(AnalysisResult.CLEAN)
                 .build();
         return ResponseEntity.ok(analysisResponse);
-        ///reactive/file/sync
     }
 
 }
