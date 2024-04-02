@@ -2,6 +2,7 @@ package com.reactive.config;
 
 import io.jaegertracing.SpanContext;
 import io.opentracing.Span;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.MDC;
 import reactor.core.CoreSubscriber;
 import reactor.util.context.Context;
 
+@Slf4j
 public class MdcContextPopulator<T> implements CoreSubscriber<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MdcContextPopulator.class);
@@ -31,7 +33,7 @@ public class MdcContextPopulator<T> implements CoreSubscriber<T> {
     public void onNext(T obj) {
 
         Context context = currentContext();
-
+        log.info(context + " ##### Obj: " + obj);
         clear();
 
         if (context.hasKey(SPAN_KEY)) {

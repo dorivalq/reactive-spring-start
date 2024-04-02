@@ -19,7 +19,7 @@ public class FluxConfig {
                 Operators.lift((scannable, coreSubscriber) -> new MdcContextPopulator<>(coreSubscriber))
         );
         Hooks.onErrorDropped(throwable -> {
-            if (throwable instanceof UnsupportedOperationException &&
+            if (throwable instanceof UnsupportedOperationException && throwable.getStackTrace().length > 0 &&
                     "org.springframework.http.ReadOnlyHttpHeaders".equals(throwable.getStackTrace()[0].getClassName())) {
                 log.info("Unsupported operation on read-only headers.");
             } else {
@@ -29,8 +29,11 @@ public class FluxConfig {
     }
 
     @Bean
+//    WebClient client() {
+//        return WebClient.create("https://www.google.com.br");
+//    }
     WebClient client() {
-        return WebClient.create("https://www.google.com.br");
+        return WebClient.create();
     }
 
 }
